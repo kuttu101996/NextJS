@@ -1,0 +1,26 @@
+import mongoose from "mongoose";
+
+const userSchema = mongoose.Schema({
+  email: {
+    type: String,
+    unique: [true, "Email already exists!"],
+    required: [true, "Email is required!"],
+  },
+  name: {
+    type: String,
+    required: [true, "Name is required!"],
+    match: [
+      /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/,
+      "Username is invalid, it should contain 8-20 alphanumeric letters and be unique!",
+    ],
+  },
+  image: { type: String },
+});
+
+// We do this when one dedicated server is always on and running.
+// const User = mongoose.model("User", userSchema);
+
+// But in Next.js a route is only getting created and run when it's getting called.
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
+export default User;
